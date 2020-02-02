@@ -13,5 +13,18 @@
     <constructor-arg ref="source" />
     <property name="messageConsumer" ref="consumer"/>
 </bean>
+
+<bean id="aspectClass" class="asos.MyAspectClass"/>
+
+<aop:config>
+    <aop:aspect id="randomaspect" ref="aspectClass">
+    
+<!--        <aop:pointcut id="pointcut1" expression="execution(void *(..))"/>
+        <aop:after method="messagePocet" pointcut-ref="pointcut1"/>-->
+        
+        <aop:pointcut id="pointcutjjj2" expression="execution(* asos.ConsumerMock.putMessage(..)) and args(message)"/>
+        <aop:around method="cenzure" pointcut-ref="pointcutjjj2"/>
+    </aop:aspect>
+</aop:config>
     
 </beans>
