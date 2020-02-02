@@ -8,18 +8,22 @@ public class SucetApp {
 
     public static double sucet(JavaSparkContext sc, String tf) {
 
-        JavaRDD<String> rdd = sc.textFile(tf);        
+        LogAccumulator acc = new LogAccumulator();
         
+        JavaRDD<String> rdd = sc.textFile(tf);        
+        sc.sc().register(acc,"myAcc");
         Double sucet = rdd.map(s -> {
             Double d = 0.0;
             try {
                 d = Double.parseDouble(s);
             } catch (Exception ex) {
-                System.out.println("Syntakticka chyba");;
+                acc.add("Syntakticka chyba " + s.toString());
+                System.out.println("Syntakticka chyba");
             }
             return d;
         }).reduce((a, b) -> a + b);
         
+        acc.value().forEach(x -> System.out.println(x));
         return sucet;
     }
 
@@ -30,7 +34,7 @@ public class SucetApp {
         }
         JavaSparkContext sc = new JavaSparkContext(conf);
         
-        System.out.println("" + sucet(sc, "src/main/resources/data1.txt"));
+        System.out.println("" + sucet(sc, "src/main/resources/data2.txt"));
         
         sc.close();
         
